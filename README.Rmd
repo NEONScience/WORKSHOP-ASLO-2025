@@ -38,11 +38,11 @@ Cleaning, and Gap-Filling NEON Datasets
 
 10:00 am - Introductions and Overview
 
-10:30 am - Browsing the data portal, document library, and spatial data repository
+10:20 am - Browsing the data portal, document library, and spatial data repository
 
-10:45 am - Live Coding - downloading data using R and the API
+10:30 am - Live Coding - downloading data using R and the API
 
-11:15 am - Live Coding - merging and plotting data
+11:00 am - Live Coding - merging and plotting data
 
 11:45 am - 15 minute break
 

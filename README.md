@@ -19,10 +19,11 @@ Accessing, Cleaning, and Gap-Filling NEON Datasets
     (<https://www.neonscience.org/resources/learning-hub/tutorials/neon-api-tokens-tutorial>)
 2.  Ensure that you have R version \>3.6 installed on your computer.
 3.  The tutorial leaders will use RStudio, which is also recommended,
-    but optional.
+    but optional. Download available at:
+    <https://posit.co/download/rstudio-desktop/>
 4.  Install required packages: neonUtilities, ggplot2, lubridate, plyr.
-    Feel free to use lines 75-78 of the NEON-AIS-data-AEMON-J-DSOS.Rmd
-    script in this repository.
+    Feel free to use lines 93-99 of the NEON-AIS-ASLO-2025.Rmd script in
+    this repository.
 
 <!-- ****** Agenda ****** -->
 
@@ -30,12 +31,12 @@ Accessing, Cleaning, and Gap-Filling NEON Datasets
 
 10:00 am - Introductions and Overview
 
-10:30 am - Browsing the data portal, document library, and spatial data
+10:20 am - Browsing the data portal, document library, and spatial data
 repository
 
-10:45 am - Live Coding - downloading data using R and the API
+10:30 am - Live Coding - downloading data using R and the API
 
-11:15 am - Live Coding - merging and plotting data
+11:00 am - Live Coding - merging and plotting data
 
 11:45 am - 15 minute break
 
