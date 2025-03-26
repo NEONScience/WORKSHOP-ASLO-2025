@@ -246,6 +246,12 @@ We can see in the Cleaning and Calibration records that on 2024-05-13 the downst
 
 If we assume that the rate of drift was constant, we can subtract a linearly increasing offset going back to the previous cleaning and calibration on 2024-04-29. Alternatively, we could set a different start and/or end date if we believe the drift only occurred during part of a cleaning and calibration interval.
 
+\begin{equation}
+wq_{i,drift} = wq_{i,clean} - drift * (time_{i}-time_{start})/(time_{end}-time_{start})
+\label{eq:wq_drift}
+\end{equation}
+
+
 ```{r drift-correct-between-cals}
 # apply drift over calibration dates
 driftStart <- as.POSIXct("2024-04-29 17:00:00",tz="GMT")
@@ -292,10 +298,15 @@ Many analyses require continuous data sets with no gaps. Other analyses (e.g. ca
 
 Because the gaps in our example here are relatively short (on the order of minutes to hours), it is probably safe to use simple linear interpolation. We can do this using the na.approx function in the zoo package.
 
+
+
 ```{r gap-fill-using-zoo}
 # gap fill using zoo
 waq_down$cleanDissolvedOxygenSat<-
   zoo::na.approx(waq_down$cleanDissolvedOxygenSat,maxgap=300)
+
+# This works where a linear fit is needed
+# This works for equally spaced NAs
 
 ```
 
@@ -439,6 +450,18 @@ Sometimes the data cleaning process must rely on professional judgement. While i
 
 A shift correction can take multiple forms. We can either add/subtract a value for an issue with an offset (intercept), and/or multiplying by a value for an issue with the gain (slope). For this example, let's apply a constant offset of +1.1 and leave the gain as 1.
 
+\begin{equation}
+nitrate_{clean} = nitrate_{QF removed} * gain + offset
+\label{eq:nitrateShift}
+\end{equation}
+
+where
+
+&ensp;&ensp;&ensp;&ensp;&ensp; $gain$	= a factor that changes the slope
+
+&ensp;&ensp;&ensp;&ensp;&ensp; $offset$	= a shift of all values equally up or down
+
+
 ```{r correct-nitrate-cal-shift}
 # correct nitrate calibration shift
 shiftStart <- as.POSIXct("2024-01-11 20:00:00",tz="GMT")
@@ -457,10 +480,6 @@ gain <- 1
 ```
 
 We can then re-plot the shifted data.
-
-
-
-
 
 
 ```{r plot-nitrate-shift-correction}

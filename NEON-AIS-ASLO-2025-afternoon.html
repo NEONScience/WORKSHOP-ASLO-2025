@@ -1109,6 +1109,11 @@ linearly increasing offset going back to the previous cleaning and
 calibration on 2024-04-29. Alternatively, we could set a different start
 and/or end date if we believe the drift only occurred during part of a
 cleaning and calibration interval.</p>
+<p><span class="math display">\[\begin{equation}
+wq_{i,drift} = wq_{i,clean} - drift *
+(time_{i}-time_{start})/(time_{end}-time_{start})
+\label{eq:wq_drift}
+\end{equation}\]</span></p>
 <pre class="r"><code># apply drift over calibration dates
 driftStart &lt;- as.POSIXct(&quot;2024-04-29 17:00:00&quot;,tz=&quot;GMT&quot;)
 
@@ -1155,7 +1160,10 @@ interpolation. We can do this using the na.approx function in the zoo
 package.</p>
 <pre class="r"><code># gap fill using zoo
 waq_down$cleanDissolvedOxygenSat&lt;-
-  zoo::na.approx(waq_down$cleanDissolvedOxygenSat,maxgap=300)</code></pre>
+  zoo::na.approx(waq_down$cleanDissolvedOxygenSat,maxgap=300)
+
+# This works where a linear fit is needed
+# This works for equally spaced NAs</code></pre>
 <p>Let’s re-plot the data and see what the gap filled data look
 like.</p>
 <pre class="r"><code># plot gap fill using zoo
@@ -1199,26 +1207,9 @@ nsw &lt;- neonUtilities::loadByProduct(dpID=&quot;DP1.20033.001&quot;, site=&quo
                      startdate=&quot;2024-01&quot;, enddate=&quot;2024-02&quot;,
                      package=&quot;expanded&quot;, release=&quot;current&quot;,
                      include.provisional=T,
-                     check.size=F)</code></pre>
-<pre><code>## Finding available files
-##   |                                                                              |                                                                      |   0%  |                                                                              |===================================                                   |  50%  |                                                                              |======================================================================| 100%
-## 
-## Downloading files totaling approximately 1.168012 MB
-## Downloading 2 files
-##   |                                                                              |                                                                      |   0%  |                                                                              |======================================================================| 100%
-## 
-## Unpacking zip files using 1 cores.
-## Stacking operation across a single core.
-## Stacking table NSW_15_minute
-## Stacking table ais_maintenance
-## Stacking table ais_sunaCleanAndCal
-## Copied the most recent publication of categoricalCodes file to /stackedFiles
-## Merged the most recent publication of sensor position files for each site and saved to /stackedFiles
-## Copied the most recent publication of variable definition file to /stackedFiles
-## Finished: Stacked 3 data tables and 4 metadata tables!
-## Stacking took 1.045249 secs</code></pre>
-<pre class="r"><code>list2env(nsw,.GlobalEnv)</code></pre>
-<pre><code>## &lt;environment: R_GlobalEnv&gt;</code></pre>
+                     check.size=F)
+
+list2env(nsw,.GlobalEnv)</code></pre>
 <p>Let’s then check how many locations are present using
 horizontalPosition.</p>
 <pre class="r"><code># nitrate is only at the downstream location
@@ -1407,6 +1398,15 @@ add/subtract a value for an issue with an offset (intercept), and/or
 multiplying by a value for an issue with the gain (slope). For this
 example, let’s apply a constant offset of +1.1 and leave the gain as
 1.</p>
+<p><span class="math display">\[\begin{equation}
+nitrate_{clean} = nitrate_{QF removed} * gain + offset
+\label{eq:nitrateShift}
+\end{equation}\]</span></p>
+<p>where</p>
+<p>      <span class="math inline">\(gain\)</span> = a factor that
+changes the slope</p>
+<p>      <span class="math inline">\(offset\)</span> = a shift of all
+values equally up or down</p>
 <pre class="r"><code># correct nitrate calibration shift
 shiftStart &lt;- as.POSIXct(&quot;2024-01-11 20:00:00&quot;,tz=&quot;GMT&quot;)
 
