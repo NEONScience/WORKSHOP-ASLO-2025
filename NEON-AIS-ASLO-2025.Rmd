@@ -216,7 +216,7 @@ waq <- neonUtilities::loadByProduct(dpID="DP1.20288.001",
                      startdate="2019-07", 
                      enddate="2019-07", 
                      package="expanded",
-                     release= "current",
+                     release= "RELEASE-2025",
                      token = Sys.getenv("NEON_TOKEN"),
                      check.size = F)
 
@@ -250,7 +250,7 @@ View(waq$waq_instantaneous)
 ```{r save-csv-waq}
 # Save out a csv
 utils::write.csv(waq$waq_instantaneous,
-                 "~/GitHub/WORKSHOP-ASLO-2025/waq_instantaneous.csv",
+                 "~/Downloads/waq_instantaneous.csv",
                  row.names = FALSE)
 
 ```
@@ -289,6 +289,9 @@ geo <- loadByProduct(dpID="DP4.00131.001", site="WALK",
                      check.size = F)
 geoResults <- geo$geo_resultsFile
 geoResults$dataFilePath
+
+# Bathymetry data for lakes is DPID DP4.00132.001
+
 # Paste url into a browser and the zip file with shapefiles and kmz and pdf will download
 
 # # Or if you're getting a bunch you could also use neonUtilities function (uncomment to use) to access geomorphology data
@@ -717,7 +720,9 @@ Now we can merge the dataframes.
 # In this case we are only interested in paired measurements. To retain all 
 # measurements even if there is not a corresponding measurement in the other 
 # dataframe, change all.x & all.y to TRUE.
-mergedData<-merge(fDOM,csd_continuousDischarge,by.x="fDOMendDate",by.y="endDate",all.x=F,all.y=F)
+mergedData<-merge(fDOM,csd_continuousDischarge,
+                  by.x="fDOMendDate",by.y="endDate",
+                  all.x=F,all.y=F)
 
 ```
 
@@ -758,7 +763,9 @@ mergedData2<-merge(NSW_15_minute,csd_continuousDischarge,
 csd_15_minute<-csd_continuousDischarge[,c("endDate","maxpostDischarge")]
 csd_15_minute$endDate<-lubridate::round_date(csd_15_minute$endDate,unit="15 minute")
 csd_15_minute<-plyr::ddply(csd_15_minute,c("endDate"),summarise,maxpostDischarge=mean(maxpostDischarge))
-mergedData2b<-merge(NSW_15_minute,csd_15_minute,by.x="endDateTime",by.y="endDate",all.x=F,all.y=F)
+mergedData2b_forplot<-merge(NSW_15_minute,csd_15_minute,
+                    by.x="endDateTime",by.y="endDate",
+                    all.x=F,all.y=F)
 
 ggplot(data = mergedData2, 
        aes(x = maxpostDischarge, y = surfWaterNitrateMean)) +

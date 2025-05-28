@@ -171,15 +171,19 @@ stepEnd <- as.POSIXct("2024-06-01 00:00:00",tz="GMT")
 
 maxStep <- 0.1
 
-for(i in 2:nrow(waq_down)){if((waq_down$startDateTime[i]>stepStart)&
-                              (waq_down$endDateTime[i]<stepEnd)){
-  if((!is.na(waq_down$localDissolvedOxygenSat[i]))&
-     (!is.na(waq_down$localDissolvedOxygenSat[i-1]))){
-    if(abs(waq_down$localDissolvedOxygenSat[i]-
-       waq_down$localDissolvedOxygenSat[i-1])>maxStep){
-          waq_down$cleanDissolvedOxygenSat[i] <- NA
-          waq_down$cleanDissolvedOxygenSat[i-1] <- NA
-      }}}}
+for(i in 2:nrow(waq_down)) {
+  if ((waq_down$startDateTime[i] > stepStart) &
+      (waq_down$endDateTime[i] < stepEnd)) {
+    if ((!is.na(waq_down$localDissolvedOxygenSat[i])) &
+        (!is.na(waq_down$localDissolvedOxygenSat[i - 1]))) {
+      if (abs(waq_down$localDissolvedOxygenSat[i] -
+              waq_down$localDissolvedOxygenSat[i - 1]) > maxStep) {
+        waq_down$cleanDissolvedOxygenSat[i] <- NA
+        waq_down$cleanDissolvedOxygenSat[i - 1] <- NA
+      }
+    }
+  }
+}
 
 ```
 
@@ -195,13 +199,17 @@ minRange <- 80
 
 maxRange <- 120
 
-for(i in 1:nrow(waq_down)){
-  if((waq_down$startDateTime[i]>rangeStart)&(waq_down$endDateTime[i]<rangeEnd)){
-    if((!is.na(waq_down$localDissolvedOxygenSat[i]))){
-      if((waq_down$localDissolvedOxygenSat[i]<minRange)|
-         (waq_down$localDissolvedOxygenSat[i]>maxRange)){
-            waq_down$cleanDissolvedOxygenSat[i] <- NA
-            }}}}
+for(i in 1:nrow(waq_down)) {
+  if ((waq_down$startDateTime[i] > rangeStart) &
+      (waq_down$endDateTime[i] < rangeEnd)) {
+    if ((!is.na(waq_down$localDissolvedOxygenSat[i]))) {
+      if ((waq_down$localDissolvedOxygenSat[i] < minRange) |
+          (waq_down$localDissolvedOxygenSat[i] > maxRange)) {
+        waq_down$cleanDissolvedOxygenSat[i] <- NA
+      }
+    }
+  }
+}
 
 ```
 
@@ -347,6 +355,13 @@ nsw <- neonUtilities::loadByProduct(dpID="DP1.20033.001", site="WALK",
                      check.size=F)
 
 list2env(nsw,.GlobalEnv)
+
+
+# Pulling a list of data products programmatically instead of from the webUI
+DPIDs <- neonUtilities::getProductInfo()
+# Filter to just aquatic data products
+aquScienceTeams <- c("Aquatic Instrument System (AIS)","Aquatic Observation System (AOS)")
+aquDPIDs <- DPIDs$productCode[DPIDs$productScienceTeam %in% aquScienceTeams]
 
 ```
 
